@@ -6,6 +6,7 @@ import Landing from "./landing/Landing";
 import Dashboard from "./dashboard/Dashboard";
 import History from "./history/History";
 import Signup from "./signup/Signup";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -20,6 +21,15 @@ function App() {
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }
