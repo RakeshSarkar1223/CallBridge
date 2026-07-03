@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import landing from "../assets/Gemini_Generated_Image_xvqhgoxvqhgoxvqh.png";
 import { Button } from "@mui/material";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
-  const [number, setNumber] = useState("");
+    const navigate = useNavigate();
+  const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [pass, setPass] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [toggleSignup, setToggleSignup] = useState<boolean>(true);
 
+  const { register, login } = useAuth();
+
   const handleChange = (e: { target: { value: string } }) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 10);
-    setNumber(value);
+    setPhone(value);
 
     if (value.length > 0 && value.length < 10) {
       setError("Phone number must be 10 digits");
@@ -21,10 +26,19 @@ function Signup() {
     }
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    console.log("submitted");
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (toggleSignup) {
+
+    try {
+      if (toggleSignup) {
+        await register(name, email, phone, pass);
+      } else {
+        await login(email, pass);
+      }
+      navigate('/dashboard')
+    } catch (err) {
+      console.error(err);
+      navigate('/signup')
     }
   };
 
@@ -47,7 +61,9 @@ function Signup() {
         {toggleSignup ? (
           <div className="w-8/12">
             <h3 className="text-3xl font-semibold">Signup Now</h3>
-            <p className="text-md py-3">Create your account and start connecting instantly.</p>
+            <p className="text-md py-3">
+              Create your account and start connecting instantly.
+            </p>
             <form
               onSubmit={handleSubmit}
               className="flex flex-col gap-5 bg-white p-6 rounded-xl shadow-lg border border-gray-200"
@@ -100,7 +116,7 @@ function Signup() {
                 <input
                   id="number"
                   type="text"
-                  value={number}
+                  value={phone}
                   onChange={handleChange}
                   placeholder="Enter your phone number"
                   required
@@ -131,6 +147,7 @@ function Signup() {
                   value={pass}
                   onChange={(e) => setPass(e.target.value)}
                   required
+                  minLength={6}
                   className="w-full h-12 px-4 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 />
               </div>
@@ -167,7 +184,9 @@ function Signup() {
         ) : (
           <div className="w-8/12">
             <h3 className="text-3xl font-semibold">Login</h3>
-            <p className="text-md py-3 pr-10">Welcome back! Sign in to continue where you left off.</p>
+            <p className="text-md py-3 pr-10">
+              Welcome back! Sign in to continue where you left off.
+            </p>
 
             <form
               onSubmit={handleSubmit}
@@ -175,29 +194,21 @@ function Signup() {
             >
               <div className="h-21">
                 <label
-                  htmlFor="number"
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-700"
                 >
-                  Phone Number
+                  Email Address
                 </label>
 
                 <input
-                  id="number"
-                  type="text"
-                  value={number}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
                   required
-                  className={`w-full h-12 px-4 rounded-lg border transition duration-200
-        ${
-          error
-            ? "border-red-500 focus:ring-red-500"
-            : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-        }
-        outline-none focus:ring-2`}
-                />
+                  className={`w-full h-12 px-4 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition`}/>
 
-                {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
               </div>
 
               <div>
