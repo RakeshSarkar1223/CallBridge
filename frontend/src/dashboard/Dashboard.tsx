@@ -5,9 +5,19 @@ import MenuItem from "@mui/material/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import { useNavigate } from "react-router-dom";
 import bgImage from "../assets/Gemini_Generated_Image_xvqhgoxvqhgoxvqh.png";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+
 
 function Dashboard() {
   const navigate = useNavigate();
+    const user = useAuth();
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+  
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Blurred Background */}

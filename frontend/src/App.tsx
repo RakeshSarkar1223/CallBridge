@@ -13,13 +13,15 @@ function App() {
     <>
       <div className="min-h-screen">
         <Navbar />
-        <Routes>
+        <div className="pt-19">
+          <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/history" element={<History />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
+        </div>
       </div>
       <ToastContainer
         position="bottom-right"
