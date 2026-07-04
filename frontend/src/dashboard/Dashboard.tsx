@@ -65,7 +65,7 @@ function Dashboard() {
               </>
             )}
           </PopupState>
-          <Button variant="contained" size="large">
+          <Button variant="contained" size="large" onClick={() => navigate("/chat")}>
             Chat
           </Button>
         </div>
