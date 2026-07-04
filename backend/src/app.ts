@@ -1,7 +1,10 @@
 import express from 'express'
-import userRouter from './route/user.route.ts'
+import userRouter from './route/user.route.ts';
+import roomRouter from './route/room.route.ts';
+import messageRouter from './route/message.route.ts';
 import cookieParser from 'cookie-parser';
-import cors from 'cors'
+import cors from 'cors';
+import {connect} from './socket/index.ts'
 
 const app = express();
 
@@ -10,6 +13,7 @@ app.use(cors({
     origin: "http://localhost:5000",
     credentials:true
 }))
+
 app.use(cookieParser())
 
 app.get("/test", (req, res) => {
@@ -17,5 +21,11 @@ app.get("/test", (req, res) => {
 });
 
 app.use("/api/user", userRouter);
+app.use("/api/room", roomRouter);
+app.use("/api/message", messageRouter);
 
-export default app;
+const {server, io} = connect(app);
+
+export {io};
+
+export default server;

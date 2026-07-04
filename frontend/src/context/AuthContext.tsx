@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export type User = {
   name?: string;
@@ -30,21 +32,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User>(null);
   const [error, setError] = useState("");
-    const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
+        setLoading(true);
         const res = await axios.get("http://localhost:5005/api/user/me", {
           withCredentials: true,
         });
-        if(res.data.success){
-            setUser(res.data.user);
-            // console.log(res.data.user)
+        if (res.data.success) {
+          setUser(res.data.user);
+          // console.log(res.data.user)
         }
       } catch {
+        // setLoading(true);
         setUser(null);
-        navigate("/")
-        
+        toast.error("Please Login First")
+        navigate("/");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -100,7 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     try {
-      await axios.post("http://localhost:5005/api/user/logout",null, {
+      await axios.post("http://localhost:5005/api/user/logout", null, {
         withCredentials: true,
       });
       toast.success("Signed out successfully. See you soon!");
@@ -112,6 +120,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const value = { user, setError, login, logout, register };
+
+  if (loading) {
+    return (
+      <div>
+        <Backdrop
+          sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </div>
+    );
+  }
 
   return <authContext.Provider value={value}>{children}</authContext.Provider>;
 };
