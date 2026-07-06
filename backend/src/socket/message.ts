@@ -1,85 +1,77 @@
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import Room from "../model/room.model.ts";
 import Message from "../model/message.model.ts";
 
-export const registerMessageHandlers = (io: Server) => {
-  io.on("connection", (socket) => {
-    console.log(`User connected(message): ${socket.id}`);
+export const registerMessageHandlers = (io: Server, socket: Socket) => {
+  // Join a chat room
+  socket.on("join-chat-room", async ({ roomId }) => {
+    try {
+      const room = await Room.findOne({
+        roomId,
+      });
 
-    // Join a chat room
-    socket.on("join-chat-room", async ({ roomId }) => {
-      try {
-        const room = await Room.findOne({
-          roomId,
-        });
-
-        if (!room) {
-          socket.emit("message-error", "Room not found");
-          return;
-        }
-
-        socket.join(roomId);
-
-        console.log(`${socket.id} joined room ${roomId}`);
-      } catch (error) {
-        console.error(error);
-
-        socket.emit("message-error", "Unable to join chat room");
+      if (!room) {
+        socket.emit("message-error", "Room not found");
+        return;
       }
-    });
 
-    // Leave a chat room
-    socket.on("leave-chat-room", ({ roomId }) => {
-      socket.leave(roomId);
+      socket.join(roomId);
 
-      console.log(`${socket.id} left room ${roomId}`);
-    });
+      console.log(`${socket.id} joined room ${roomId}`);
+    } catch (error) {
+      console.error(error);
 
-    // Send message
-    socket.on("send-message", async ({ roomId, msg, sender }) => {
-      try {
-        const trimmedMessage = msg?.trim();
+      socket.emit("message-error", "Unable to join chat room");
+    }
+  });
 
-        if (!trimmedMessage) {
-          socket.emit("message-error", "Message cannot be empty");
-          return;
-        }
+  // Leave a chat room
+  socket.on("leave-chat-room", ({ roomId }) => {
+    socket.leave(roomId);
 
-        const room = await Room.findOne({
-          roomId,
-        });
+    console.log(`${socket.id} left room ${roomId}`);
+  });
 
-        if (!room) {
-          socket.emit("message-error", "Room not found");
-          return;
-        }
+  // Send message
+  socket.on("send-message", async ({ roomId, msg, sender }) => {
+    try {
+      const trimmedMessage = msg?.trim();
 
-        // Make sure sender is actually a participant
-        if (!room.participants.includes(sender)) {
-          socket.emit("message-error", "You are not a member of this room");
-
-          return;
-        }
-
-        // Save message first
-        const savedMessage = await Message.create({
-          roomId: room._id,
-          sender,
-          msg: trimmedMessage,
-        });
-
-        // Send saved message to everyone in the room,
-        // including the sender.
-        io.to(roomId).emit("receive-message", savedMessage);
-      } catch (error) {
-        console.error(error);
-
-        socket.emit("message-error", "Unable to send message");
+      if (!trimmedMessage) {
+        socket.emit("message-error", "Message cannot be empty");
+        return;
       }
-    });
 
-    socket.on("disconnect", () => {
-      console.log(`User disconnected(message): ${socket.id}`);
-    });
+      const room = await Room.findOne({
+        roomId,
+      });
+
+      if (!room) {
+        socket.emit("message-error", "Room not found");
+        return;
+      }
+
+      // Make sure sender is actually a participant
+      if (!room.participants.includes(sender)) {
+        socket.emit("message-error", "You are not a member of this room");
+
+        return;
+      }
+
+      // Save message first
+      const savedMessage = await Message.create({
+        roomId: room._id,
+        sender,
+        msg: trimmedMessage,
+      });
+
+      // Send saved message to everyone in the room,
+      // including the sender.
+      io.to(roomId).emit("receive-message", savedMessage);
+    } catch (error) {
+      console.error(error);
+
+      socket.emit("message-error", "Unable to send message");
+    }
   });
 };
