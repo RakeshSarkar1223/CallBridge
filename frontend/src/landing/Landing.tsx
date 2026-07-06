@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import landing from "../assets/Gemini_Generated_Image_xvqhgoxvqhgoxvqh.png";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";

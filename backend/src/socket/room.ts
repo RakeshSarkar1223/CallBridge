@@ -1,10 +1,7 @@
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import Room from "../model/room.model.ts";
 
-export const registerRoomHandlers = (io: Server) => {
-  io.on("connection", (socket) => {
-  console.log(`User connected(room): ${socket.id}`);
-
+export const registerRoomHandlers = (io: Server, socket : Socket) => {
   // Create Room
   socket.on("create-room", async ({ roomName, email }) => {
     try {
@@ -24,7 +21,7 @@ export const registerRoomHandlers = (io: Server) => {
 
       socket.join(roomId);
 
-      io.emit("room-created", room);
+      socket.emit("room-created", room);
 
       // If you want every connected user to immediately
       // see the new room in their sidebar, replace the line above with:
@@ -69,5 +66,5 @@ export const registerRoomHandlers = (io: Server) => {
   socket.on("disconnect", () => {
     console.log(`User disconnected(room): ${socket.id}`);
   });
-});
+
 };

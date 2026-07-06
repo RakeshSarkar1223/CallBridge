@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import {
   Button,
   Dialog,
@@ -21,11 +21,11 @@ interface Room {
 }
 
 interface SideBarProps {
-  openedRoom : string
+  openedRoom: string;
   setOpenedRoom: (id: string) => void;
 }
 
-function SideBar({openedRoom, setOpenedRoom}  : SideBarProps) {
+function SideBar({ openedRoom, setOpenedRoom }: SideBarProps) {
   const { user } = useAuth();
 
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -44,9 +44,7 @@ function SideBar({openedRoom, setOpenedRoom}  : SideBarProps) {
 
     const loadRooms = async () => {
       try {
-        const res = await axios.get("http://localhost:5005/api/room/all-room", {
-          withCredentials: true,
-        });
+        const res = await api.get("/api/room/all-room");
 
         if (res.data.success) {
           setRooms(res.data.rooms);

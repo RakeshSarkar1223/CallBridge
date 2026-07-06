@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:5005", {
+export const socket = io(import.meta.env.VITE_API_URL, {
     autoConnect: true,
-    reconnectionDelayMax: 10000
+    reconnectionDelayMax: 10000,
+    transports: ["websocket"],
 });

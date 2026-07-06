@@ -1,4 +1,4 @@
-import React from "react";
+
 import Navbar from "./Navbar";
 import { Routes, Route } from "react-router-dom";
 import Profile from "./profile/Profile";
@@ -8,6 +8,10 @@ import History from "./history/History";
 import Signup from "./signup/Signup";
 import Chat from "./chat/Chat";
 import { ToastContainer } from "react-toastify";
+import JoinMeeting from "./meeting/JoinMeeting";
+import NotFound from "./NotFound";
+import HostMeeting from "./meeting/HostMeeting";
+import MeetingRoom from "./meeting/MeetingRoom";
 
 function App() {
   return (
@@ -22,6 +26,10 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/join-meeting" element={<JoinMeeting/>}/>
+            <Route path="/host-meeting" element={<HostMeeting/>}/>
+            <Route path="/join/:meetingId" element={<MeetingRoom/>}/>
+            <Route path="*" element={<NotFound/>}/>
           </Routes>
         </div>
       </div>

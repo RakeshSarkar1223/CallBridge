@@ -47,7 +47,7 @@ function Dashboard() {
                     <MenuItem
                       onClick={() => {
                         popupState.close();
-                        navigate("/host");
+                        navigate("/host-meeting");
                       }}
                     >
                       Host a Meeting
@@ -55,7 +55,7 @@ function Dashboard() {
                     <MenuItem
                       onClick={() => {
                         popupState.close();
-                        navigate("/join");
+                        navigate("/join-meeting");
                       }}
                     >
                       Join a Meeting

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { socket } from "../socket/socket";
@@ -50,19 +50,15 @@ function Message({ openedRoom }: SideBarProps) {
           return;
         }
 
-        const resRoom = await axios.get(
-          `http://localhost:5005/api/room/get-room/${openedRoom}`,
-          { withCredentials: true },
-        );
+        const resRoom = await api.get(`/api/room/get-room/${openedRoom}`);
 
         if (resRoom.data.success) {
           setRoom(resRoom.data.room);
         }
 
-        const resMessage = await axios.get(
-          `http://localhost:5005/api/message/${openedRoom}`,
-          { withCredentials: true },
-        );
+        const resMessage = await api.get(`/api/message/${openedRoom}`, {
+          withCredentials: true,
+        });
 
         if (resMessage.data.success) {
           setMessages(resMessage.data.messages);
@@ -150,9 +146,7 @@ function Message({ openedRoom }: SideBarProps) {
                 {room?.roomName}
               </h2>
 
-              <p className="text-xs text-gray-500">
-                Room ID: {room?.roomId}
-              </p>
+              <p className="text-xs text-gray-500">Room ID: {room?.roomId}</p>
             </div>
 
             {/* ADDED */}
@@ -205,7 +199,7 @@ function Message({ openedRoom }: SideBarProps) {
                         }`}
                       >
                         <p
-                          className={`text-sm break-words ${
+                          className={`text-sm wrap-break-word ${
                             isCurrentUser ? "text-white" : "text-gray-800"
                           }`}
                         >
@@ -278,7 +272,9 @@ function Message({ openedRoom }: SideBarProps) {
 
                 <div className="min-w-0">
                   <p className="font-medium text-gray-800 capitalize">
-                    {participant.toString() === user?.email ? `${participant.split("@")[0]} (You)`: `${participant.split("@")[0]}`}
+                    {participant.toString() === user?.email
+                      ? `${participant.split("@")[0]} (You)`
+                      : `${participant.split("@")[0]}`}
                   </p>
 
                   <p className="truncate text-sm text-gray-500">

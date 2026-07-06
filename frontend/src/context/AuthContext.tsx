@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Backdrop from "@mui/material/Backdrop";
@@ -39,9 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const getCurrentUser = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5005/api/user/me", {
-          withCredentials: true,
-        });
+        const res = await api.get("/api/user/me");
         if (res.data.success) {
           setUser(res.data.user);
           // console.log(res.data.user)
@@ -49,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       } catch {
         // setLoading(true);
         setUser(null);
-        toast.error("Please Login First")
+        toast.error("Please Login First");
         navigate("/");
       } finally {
         setLoading(false);
@@ -67,13 +65,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   ) => {
     setError("");
     try {
-      const response = await axios.post(
-        "http://localhost:5005/api/user/register",
-        { name, email, phone, password },
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await api.post("/api/user/register", {
+        name,
+        email,
+        phone,
+        password,
+      });
       const data = response.data;
       setUser(data.user);
       toast.success("Account created successfully! Welcome aboard.");
@@ -89,11 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string) => {
     setError("");
     try {
-      const respone = await axios.post(
-        "http://localhost:5005/api/user/login",
-        { email, password },
-        { withCredentials: true },
-      );
+      const respone = await api.post("/api/user/login", { email, password });
 
       setUser(respone.data.user);
       toast.success(`Successfully logged in as ${respone.data.user.name}!`);
@@ -108,9 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     try {
-      await axios.post("http://localhost:5005/api/user/logout", null, {
-        withCredentials: true,
-      });
+      await api.post("/api/user/logout", null);
       toast.success("Signed out successfully. See you soon!");
     } catch (error) {
       toast.error("Logout failed. Please try again.");
