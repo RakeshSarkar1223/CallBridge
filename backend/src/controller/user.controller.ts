@@ -7,10 +7,11 @@ import {
 // import { use } from "passport";
 
 // Shared cookie options to keep things DRY (Don't Repeat Yourself)
+const isProd = process.env.NODE_ENV === "production";
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict" as const,
+  secure: isProd,
+  sameSite:  (isProd ? "none" : "lax") as "none" | "lax" ,
   maxAge: 24 * 60 * 60 * 1000, // 1 day
 };
 
