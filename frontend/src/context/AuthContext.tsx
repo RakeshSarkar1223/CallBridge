@@ -14,7 +14,6 @@ export type User = {
 
 type AuthContextType = {
   user: User;
-  setError: React.Dispatch<React.SetStateAction<string>>;
   login: (email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
   register: (
@@ -31,7 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User>(null);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -63,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     phone: string,
     password: string,
   ) => {
-    setError("");
+    // setError("");
     try {
       const response = await api.post("/api/user/register", {
         name,
@@ -77,14 +76,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return data;
     } catch (err: any) {
       const msg = err.response?.data?.message || "Registration failed.";
-      setError(msg);
+      // setError(msg);
       toast.error(msg);
       throw new Error(msg);
     }
   };
 
   const login = async (email: string, password: string) => {
-    setError("");
+    // setError("");
     try {
       const respone = await api.post("/api/user/login", { email, password });
 
@@ -93,7 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return respone.data;
     } catch (error: any) {
       const msg = error.response?.data?.message || "Login failed. Please verify credentials.";
-      setError(msg);
+      // setError(msg);
       toast.error(msg);
       throw new Error(msg);
     }
@@ -110,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const value = { user, setError, login, logout, register };
+  const value = { user, login, logout, register };
 
   if (loading) {
     return (
