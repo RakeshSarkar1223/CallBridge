@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import { useState , useEffect} from "react";
 import logo from "./assets/Gemini_Generated_Image_mj10n9mj10n9mj102 (1).png";
 import avater from "./assets/images.jpg";
 import { Link, useNavigate } from "react-router-dom";

@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Avatar } from "@mui/material";
 import avater from "../assets/images.jpg";
 import { useAuth } from "../context/AuthContext";
