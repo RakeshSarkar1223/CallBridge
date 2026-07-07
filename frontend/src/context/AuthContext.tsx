@@ -75,8 +75,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(data.user);
       toast.success("Account created successfully! Welcome aboard.");
       return data;
-    } catch (err) {
-      const msg = "Registration failed.";
+    } catch (err: any) {
+      const msg = err.response?.data?.message || "Registration failed.";
       setError(msg);
       toast.error(msg);
       throw new Error(msg);
@@ -91,8 +91,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(respone.data.user);
       toast.success(`Successfully logged in as ${respone.data.user.name}!`);
       return respone.data;
-    } catch (error) {
-      const msg = "Login failed. Please verify credentials.";
+    } catch (error: any) {
+      const msg = error.response?.data?.message || "Login failed. Please verify credentials.";
       setError(msg);
       toast.error(msg);
       throw new Error(msg);
