@@ -4,4 +4,5 @@ export const socket = io(import.meta.env.VITE_API_URL, {
     autoConnect: true,
     reconnectionDelayMax: 10000,
     transports: ["websocket"],
+    withCredentials: true,
 });

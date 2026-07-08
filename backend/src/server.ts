@@ -1,6 +1,7 @@
+import "dotenv/config";
 import server from "./app.ts";
 import { connectDB } from "./utils/connect.ts";
-import "dotenv/config";
+
 
 const startServer = async () => {
   try {

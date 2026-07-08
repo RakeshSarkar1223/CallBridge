@@ -75,11 +75,20 @@ function Message({ openedRoom }: SideBarProps) {
   useEffect(() => {
     if (!openedRoom) return;
 
-    socket.emit("join-chat-room", {
-      roomId: openedRoom,
-    });
+    const joinRoom = () => {
+      socket.emit("join-chat-room", {
+        roomId: openedRoom,
+      });
+    };
+
+    // Join room initially
+    joinRoom();
+
+    // Re-join the chat room automatically if the socket connection drops and reconnects
+    socket.on("connect", joinRoom);
 
     return () => {
+      socket.off("connect", joinRoom);
       socket.emit("leave-chat-room", {
         roomId: openedRoom,
       });

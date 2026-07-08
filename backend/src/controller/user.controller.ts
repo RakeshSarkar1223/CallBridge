@@ -69,7 +69,7 @@ export const getUser = async (req : Request, res : Response) => {
     try {
         const {token} = req.cookies ;
         if(!token) {
-            res.status(400).json({massage : "No current user found"});
+            res.status(400).json({message : "No current user found"});
             return;
         }
         const user = await getUserS(token);
@@ -81,7 +81,7 @@ export const getUser = async (req : Request, res : Response) => {
     } catch (error : any) {
         res.status(500).json({
             success : false,
-            massage: error.massage
+            message: error.message
         })
     }
 }

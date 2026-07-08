@@ -9,9 +9,22 @@ import { registerMeetingHandlers } from "./meeting.ts";
 export const connect = (app: Express) => {
   const server = createServer(app);
 
+  const allowedOrigin = process.env.FRONTEND_URL;
   const io = new Server(server, {
     cors: {
-      origin: process.env.FRONTEND_URL,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (!allowedOrigin) return callback(null, false);
+        
+        const cleanAllowed = allowedOrigin.replace(/\/$/, "");
+        const cleanOrigin = origin.replace(/\/$/, "");
+        
+        if (cleanOrigin === cleanAllowed || (process.env.NODE_ENV !== "production" && cleanOrigin.startsWith("http://localhost:"))) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
       credentials: true,
     },
   });
